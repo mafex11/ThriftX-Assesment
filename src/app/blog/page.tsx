@@ -44,19 +44,18 @@ export default async function BlogPage({}: {}) {
             const plain = (p.content || "").replace(/<[^>]*>/g, "");
             const preview = plain.length > 220 ? plain.slice(0, 220) + "…" : plain;
             return (
-              <div key={p._id.toString()} className="border border-zinc-800 rounded-lg p-5 hover:bg-zinc-900">
-                <div className="flex items-start gap-5">
+              <div key={p._id.toString()} className="relative border border-zinc-800 rounded-lg p-5 hover:bg-zinc-900">
+                <Link href={`/blog/${p._id}`} className="absolute inset-0" aria-label={`Read ${p.title}`} />
+                <div className="relative z-10 flex items-start gap-5 pointer-events-none">
                   {p.imageUrl ? (
                     // eslint-disable-next-line @next/next/no-img-element
                     <img src={p.imageUrl} alt="" className="w-48 h-32 object-cover rounded" />
                   ) : null}
                   <div className="flex-1">
                     <div className="flex items-start justify-between gap-4">
-                      <h2 className="text-2xl font-medium mb-1">
-                        <Link href={`/blog/${p._id}`}>{p.title}</Link>
-                      </h2>
+                      <h2 className="text-2xl font-medium mb-1">{p.title}</h2>
                       {isAdmin ? (
-                        <Link href={`/blog/${p._id}/edit`} className="text-sm px-3 py-1 rounded border border-zinc-700 hover:bg-zinc-800">
+                        <Link href={`/blog/${p._id}/edit`} className="pointer-events-auto relative z-20 text-sm px-3 py-1 rounded border border-zinc-700 hover:bg-zinc-800">
                           Edit
                         </Link>
                       ) : null}
