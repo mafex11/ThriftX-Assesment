@@ -10,6 +10,7 @@ import { cookies } from "next/headers";
 const JWT_SECRET = process.env.JWT_SECRET || "dev-secret-change";
 
 export const dynamic = "force-dynamic";
+export const runtime = "nodejs";
 
 async function isAdminFromCookies(): Promise<boolean> {
   try {

@@ -1,11 +1,13 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { connectToDatabase } from "@/lib/db";
 import { Post } from "@/models/Post";
 import jwt from "jsonwebtoken";
 
 const JWT_SECRET = process.env.JWT_SECRET || "dev-secret-change";
 
-function isAdminFromRequest(req: Request): boolean {
+export const runtime = "nodejs";
+
+function isAdminFromRequest(req: NextRequest | Request): boolean {
   try {
     const cookieHeader = req.headers.get("cookie") || "";
     const match = cookieHeader.match(/(?:^|; )admin_token=([^;]+)/);
@@ -24,7 +26,7 @@ export async function GET() {
   return NextResponse.json(posts);
 }
 
-export async function POST(req: Request) {
+export async function POST(req: NextRequest | Request) {
   if (!isAdminFromRequest(req)) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   await connectToDatabase();
   const body = await req.json();
