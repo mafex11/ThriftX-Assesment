@@ -19,6 +19,13 @@ export const runtime = "nodejs";
 async function isAdminFromCookies(): Promise<boolean> {
   try {
     const cookieStore = await cookies();
+    const adminToken = cookieStore.get("admin_token")?.value || null;
+    if (adminToken) {
+      try {
+        const ap = jwt.verify(adminToken, JWT_SECRET) as { role: string };
+        if (ap.role === "admin") return true;
+      } catch {}
+    }
     const authToken = cookieStore.get("auth_token")?.value || null;
     if (!authToken) return false;
     const payload = jwt.verify(authToken, JWT_SECRET) as { sub: string; email: string };

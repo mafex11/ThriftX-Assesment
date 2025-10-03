@@ -29,14 +29,14 @@ export async function POST(req: Request) {
 
     const token = jwt.sign({ sub: user._id.toString(), email: user.email }, JWT_SECRET, { expiresIn: "7d" });
     const res = NextResponse.json({ id: user._id.toString(), email: user.email });
-    res.cookies.set("auth_token", token, { httpOnly: true, path: "/", sameSite: "lax", maxAge: 60 * 60 * 24 * 7 });
+    res.cookies.set("auth_token", token, { httpOnly: true, path: "/", sameSite: "lax", maxAge: 60 * 60 * 24 * 7, secure: process.env.NODE_ENV === "production" });
 
     // Clear any stale admin token first
     res.cookies.set("admin_token", "", { httpOnly: true, path: "/", maxAge: 0 });
     // If admin logs in through normal login, also set admin session
     if (email.toLowerCase() === ADMIN_EMAIL.toLowerCase()) {
       const adminToken = jwt.sign({ role: "admin" }, JWT_SECRET, { expiresIn: "1d" });
-      res.cookies.set("admin_token", adminToken, { httpOnly: true, path: "/", sameSite: "lax", maxAge: 60 * 60 * 24 });
+      res.cookies.set("admin_token", adminToken, { httpOnly: true, path: "/", sameSite: "lax", maxAge: 60 * 60 * 24, secure: process.env.NODE_ENV === "production" });
     }
     return res;
   } catch (err) {
