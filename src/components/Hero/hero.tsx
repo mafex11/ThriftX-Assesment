@@ -43,10 +43,10 @@ const Hero = () => {
       </h1>
       
       {/* Video container */}
-      <div className={`w-full max-w-screen mx-auto transition-all duration-500 ${compactPadding ? 'px-0 sm:px-0' : 'px-2 sm:px-20'}`}>
+      <div className={`w-full max-w-screen mx-auto transition-all duration-500 ${compactPadding ? 'px-0 sm:px-0' : 'px-2 sm:px-40'}`}>
         <div className="relative w-full aspect-[9/16] md:aspect-video overflow-hidden">
           <video
-            src="/video.mp4"
+            src="/video.webm"
             autoPlay
             muted
             loop
@@ -77,8 +77,8 @@ const Hero = () => {
             <p className="mt-4 text-emerald-200/90 max-w-3xl font-light text-lg ">
               From inventory storytelling to digital storefronts and fulfillment, ThriftX gives small shops the tools to shine online while keeping the soul of thrifting alive.
             </p>
-            <Button className="mt-6 rounded-full bg-emerald-100 text-emerald-900 hover:bg-emerald-200 px-6 py-6 text-md">
-              See our offerings
+            <Button asChild className="mt-6 rounded-full bg-emerald-100 text-emerald-900 hover:bg-emerald-200 px-6 py-6 text-md">
+              <Link href="/work">See our offerings</Link>
             </Button>
           </div>
           <div className="relative w-full aspect-[16/10] md:aspect-[4/3] overflow-hidden rounded-xl">

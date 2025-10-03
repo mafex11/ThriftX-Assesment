@@ -76,10 +76,11 @@ const NavigationBar = () => {
 
       {/* Mobile full-screen menu overlay (slides in) */}
       <div
-        className={`fixed inset-0 z-50 md:hidden bg-black transition-opacity duration-200 ease-out ${
+        className={`fixed inset-0 z-[9999] md:hidden bg-black transition-opacity duration-200 ease-out ${
           isOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
         }`}
         aria-hidden={!isOpen}
+        style={{ zIndex: 9999 }}
       >
         <div className="mx-auto max-w-screen px-4 sm:px-20 lg:px-30 pt-4">
           <div className="flex h-16 items-center justify-between">
@@ -100,17 +101,17 @@ const NavigationBar = () => {
           </div>
 
           <nav className="mt-8 flex flex-col items-end gap-6 pr-2 text-xl font-normal">
-            <Link href="#work" className="text-white hover:text-gray-400 transition-colors" onClick={() => setIsOpen(false)}>Work</Link>
-            <Link href="#about" className="text-white hover:text-gray-400 transition-colors" onClick={() => setIsOpen(false)}>Expertise</Link>
-            <Link href="#about" className="text-white hover:text-gray-400 transition-colors" onClick={() => setIsOpen(false)}>About</Link>
-            <Link href="#work" className="text-white hover:text-gray-400 transition-colors" onClick={() => setIsOpen(false)}>Latest</Link>
+            <Link href="/" className="text-white hover:text-gray-400 transition-colors" onClick={() => setIsOpen(false)}>Home</Link>
+            <Link href="/work" className="text-white hover:text-gray-400 transition-colors" onClick={() => setIsOpen(false)}>Work</Link>
+            <Link href="/about" className="text-white hover:text-gray-400 transition-colors" onClick={() => setIsOpen(false)}>About</Link>
+            <Link href="/blog" className="text-white hover:text-gray-400 transition-colors" onClick={() => setIsOpen(false)}>Blogs</Link>
             <Link href="/contact" className="text-white hover:text-gray-400 transition-colors" onClick={() => setIsOpen(false)}>Contact</Link>
             {isAuthenticated ? (
               <>
                 <span className="text-gray-300 text-base">{user?.email}</span>
                 <button
                   onClick={() => { logout(); setIsOpen(false); }}
-                  className="inline-flex items-center rounded-full text-white font-normal"
+                  className="inline-flex items-center rounded-full bg-white px-3 py-1.5 text-black font-normal hover:text-gray-400 transition-colors justify-center"
                 >
                   Logout
                 </button>
@@ -118,7 +119,7 @@ const NavigationBar = () => {
             ) : (
               <>
                 <Link href="/login" className="text-white hover:text-gray-400 transition-colors" onClick={() => setIsOpen(false)}>Login</Link>
-                <Link href="/signup" className="inline-flex items-center rounded-full text-white font-normal" onClick={() => setIsOpen(false)}>
+                <Link href="/signup" className="inline-flex items-center rounded-full bg-white px-3 py-1.5 text-black font-normal hover:text-gray-400 transition-colors justify-center" onClick={() => setIsOpen(false)}>
                   Sign up
                 </Link>
               </>
