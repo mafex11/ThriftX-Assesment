@@ -11,8 +11,64 @@ const instrumentSans = Instrument_Sans({
 });
 
 export const metadata: Metadata = {
-  title: "ThriftX",
-  description: "Connecting Mumbai's independent thrift stores with shoppers across India—powering circular fashion while helping small businesses thrive.",
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000"),
+  title: {
+    default: "ThriftX",
+    template: "%s | ThriftX",
+  },
+  applicationName: "ThriftX",
+  description:
+    "Connecting Mumbai's independent thrift stores with shoppers across India—powering circular fashion while helping small businesses thrive.",
+  keywords: [
+    "thrift",
+    "secondhand",
+    "vintage",
+    "Mumbai",
+    "circular fashion",
+    "sustainable shopping",
+    "independent stores",
+  ],
+  openGraph: {
+    type: "website",
+    locale: "en_IN",
+    url: "/",
+    siteName: "ThriftX",
+    title: "ThriftX",
+    description:
+      "Connecting Mumbai's independent thrift stores with shoppers across India—powering circular fashion while helping small businesses thrive.",
+    images: [
+      {
+        url: "/logo.png",
+        width: 1200,
+        height: 630,
+        alt: "ThriftX",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "ThriftX",
+    description:
+      "Connecting Mumbai's independent thrift stores with shoppers across India—powering circular fashion while helping small businesses thrive.",
+    images: ["/logo.png"],
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-image-preview": "large",
+      "max-video-preview": -1,
+      "max-snippet": -1,
+    },
+  },
+  alternates: {
+    canonical: "/",
+  },
+  icons: {
+    icon: "/favicon.ico",
+  },
 };
 
 export default function RootLayout({

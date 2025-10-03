@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
+import ImageUpload from "@/components/ImageUpload/image-upload";
 
 export default function NewPostForm() {
   const router = useRouter();
@@ -43,34 +44,41 @@ export default function NewPostForm() {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
           <label className="block mb-2">Title</label>
-          <Input value={title} onChange={(e) => setTitle(e.target.value)} required />
+          <Input value={title} onChange={(e) => setTitle(e.target.value)} required className="h-12 text-lg" />
         </div>
         <div>
           <label className="block mb-2">Date</label>
-          <Input type="date" value={date} onChange={(e) => setDate(e.target.value)} required />
+          <Input type="date" value={date} onChange={(e) => setDate(e.target.value)} required className="h-12 text-lg" />
         </div>
         <div>
           <label className="block mb-2">Author</label>
-          <Input value={author} onChange={(e) => setAuthor(e.target.value)} required />
+          <Input value={author} onChange={(e) => setAuthor(e.target.value)} required className="h-12 text-lg" />
         </div>
         <div>
           <label className="block mb-2">Image URL (optional)</label>
-          <Input value={imageUrl} onChange={(e) => setImageUrl(e.target.value)} />
+          <Input value={imageUrl} onChange={(e) => setImageUrl(e.target.value)} placeholder="Or upload image below" className="h-12 text-lg" />
+        </div>
+        <div className="md:col-span-2">
+          <ImageUpload 
+            onImageUpload={setImageUrl}
+            currentImageUrl={imageUrl}
+            disabled={loading}
+          />
         </div>
         <div>
           <label className="block mb-2">Category</label>
-          <Input value={category} onChange={(e) => setCategory(e.target.value)} placeholder="e.g. Style, News" />
+          <Input value={category} onChange={(e) => setCategory(e.target.value)} placeholder="e.g. Style, News" className="h-12 text-lg" />
         </div>
         <div>
           <label className="block mb-2">Tags</label>
-          <Input value={tagsInput} onChange={(e) => setTagsInput(e.target.value)} placeholder="Comma separated (e.g. y2k, denim, thrift)" onBlur={() => setTags(tagsInput.split(",").map(t => t.trim()).filter(Boolean))} />
+          <Input value={tagsInput} onChange={(e) => setTagsInput(e.target.value)} placeholder="Comma separated (e.g. y2k, denim, thrift)" onBlur={() => setTags(tagsInput.split(",").map(t => t.trim()).filter(Boolean))} className="h-12 text-lg" />
           {tags.length ? (
             <div className="mt-2 text-xs text-gray-400">{tags.join(", ")}</div>
           ) : null}
         </div>
         <div className="md:col-span-2">
           <label className="block mb-2">Content (HTML supported)</label>
-          <textarea className="w-full h-40 bg-zinc-900 border border-zinc-800 rounded p-2" value={content} onChange={(e) => setContent(e.target.value)} required />
+          <textarea className="w-full h-48 bg-zinc-900 border border-zinc-800 rounded p-4 text-lg" value={content} onChange={(e) => setContent(e.target.value)} required />
         </div>
       </div>
       {error ? <p className="text-red-400 text-sm">{error}</p> : null}

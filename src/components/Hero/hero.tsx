@@ -11,10 +11,13 @@ const Hero = () => {
   const [supportActiveBg, setSupportActiveBg] = useState(false)
   const supportRef = useRef<HTMLDivElement | null>(null)
   const heroRef = useRef<HTMLDivElement | null>(null)
+  const contactRef = useRef<HTMLDivElement | null>(null)
   const { scrollYProgress } = useScroll({
     target: heroRef,
     offset: ["start start", "end start"]
   })
+
+  const contactInView = useInView(contactRef, { amount: 0.3 })
 
   // Transform values for parallax effects
   const y = useTransform(scrollYProgress, [0, 1], ["0%", "50%"])
@@ -134,7 +137,7 @@ const Hero = () => {
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.6, delay: 0.6 }}
         >
-          <Button asChild className="mt-8 rounded-full bg-white text-black hover:bg-gray-200 px-6 py-6 text-md">
+          <Button asChild className="mt-8 rounded-full bg-white text-black hover:bg-gray-200 px-6 py-6 text-md transition-transform duration-200 ease-out hover:scale-105 hover:-translate-y-0.5 hover:shadow-[0_10px_25px_rgba(255,255,255,0.15)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/70">
             <Link href="/work">See our work</Link>
           </Button>
         </motion.div>
@@ -190,8 +193,16 @@ const Hero = () => {
               transition={{ duration: 0.6, delay: 0.8 }}
               viewport={{ once: true }}
             >
-              <Button asChild className="mt-6 rounded-full bg-emerald-100 text-emerald-900 hover:bg-emerald-200 px-6 py-6 text-md">
-                <Link href="/work">See our offerings</Link>
+              <Button asChild className="group mt-6 rounded-full bg-emerald-100 text-emerald-900 hover:bg-emerald-200 px-6 py-6 text-md transition-colors">
+                <Link href="/work" className="inline-flex items-center gap-0 transition-all duration-200 group-hover:gap-2">
+                  <span>See our offerings</span>
+                  <span className="inline-flex items-center w-0 overflow-hidden opacity-0 transition-all duration-200 group-hover:w-4 group-hover:opacity-100">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                      <path d="M5 12h14" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                      <path d="M13 6l6 6-6 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                    </svg>
+                  </span>
+                </Link>
               </Button>
             </motion.div>
           </motion.div>
@@ -222,7 +233,8 @@ const Hero = () => {
       {/* Contact section */}
       <motion.section 
         id="contact" 
-        className="w-full bg-zinc-950 pt-20"
+        ref={contactRef as any}
+        className={`w-full py-20 transition-colors duration-500 ${contactInView ? 'bg-white text-zinc-900' : 'bg-zinc-950 text-white'}`}
         initial={{ opacity: 0 }}
         whileInView={{ opacity: 1 }}
         transition={{ duration: 0.8 }}
@@ -245,7 +257,7 @@ const Hero = () => {
               Have a thrift store?
             </motion.h3>
             <motion.p 
-              className="mt-4 text-zinc-300 max-w-xl"
+              className={`mt-4 max-w-xl ${contactInView ? 'text-zinc-700' : 'text-zinc-300'}`}
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.6 }}
@@ -267,7 +279,7 @@ const Hero = () => {
               transition={{ duration: 0.6, delay: 0.8 }}
               viewport={{ once: true }}
             >
-              <Button asChild className="rounded-full bg-white text-black hover:bg-zinc-200 px-6 py-6 text-base">
+              <Button asChild className={`rounded-full px-6 py-6 text-base transition-colors ${contactInView ? 'bg-black text-white hover:bg-zinc-800' : 'bg-white text-black hover:bg-zinc-200'}`}>
                 <Link href="/contact">Contact us</Link>
               </Button>
             </motion.div>

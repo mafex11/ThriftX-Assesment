@@ -46,7 +46,7 @@ const NavigationBar = () => {
           <div 
             className="flex items-center"
           >
-            <Link href="/" className="text-white tracking-[0.6em] font-semibold text-2xl">
+            <Link href="/" className="text-white tracking-[0.6em] font-semibold text-2xl animate-pulse filter drop-shadow-[0_0_12px_rgba(59,130,246,0.8)] hover:drop-shadow-[0_0_18px_rgba(59,130,246,1)] transition" style={{ animationDuration: '0.8s' }}>
               THRIFTX
             </Link>
           </div>
@@ -174,7 +174,7 @@ const NavigationBar = () => {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.3, delay: 0.1 }}
               >
-                <Link href="#" className="text-white tracking-[0.6em] font-semibold text-2xl">
+                <Link href="#" className="text-white tracking-[0.6em] font-semibold text-2xl animate-pulse filter drop-shadow-[0_0_12px_rgba(59,130,246,0.8)] hover:drop-shadow-[0_0_18px_rgba(59,130,246,1)] transition" style={{ animationDuration: '0.8s' }}>
                   THRIFTX
                 </Link>
                 <motion.button

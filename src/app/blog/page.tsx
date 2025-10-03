@@ -1,11 +1,14 @@
 import React from "react";
 import NavigationBar from "@/components/NavigationBar/navigation";
 import Footer from "@/components/Footer/footer";
+import BlogSearch from "@/components/BlogSearch/blog-search";
 import { connectToDatabase } from "@/lib/db";
 import { Post } from "@/models/Post";
 import Link from "next/link";
+import Image from "next/image";
 import jwt from "jsonwebtoken";
 import { cookies } from "next/headers";
+import { getOptimizedImageUrl } from "@/lib/cloudinary";
 
 const JWT_SECRET = process.env.JWT_SECRET || "dev-secret-change";
 
@@ -25,37 +28,68 @@ async function isAdminFromCookies(): Promise<boolean> {
   }
 }
 
-export default async function BlogPage({}: {}) {
+export default async function BlogPage({ searchParams }: { searchParams?: { [key: string]: string | string[] | undefined } }) {
   await connectToDatabase();
-  const posts = await Post.find({}, { title: 1, date: 1, author: 1, imageUrl: 1, content: 1, category: 1, tags: 1 }).sort({ date: -1 }).lean();
+  const qRaw = (searchParams?.q ?? "");
+  const q = Array.isArray(qRaw) ? qRaw[0] : qRaw;
+  const hasQuery = typeof q === "string" && q.trim().length > 0;
+  const regex = hasQuery ? new RegExp(q!.trim(), "i") : null;
+  const mongoQuery = hasQuery
+    ? {
+        $or: [
+          { title: { $regex: regex } },
+          { author: { $regex: regex } },
+          { content: { $regex: regex } },
+          { category: { $regex: regex } },
+          { tags: { $elemMatch: { $regex: regex } } },
+        ],
+      }
+    : {};
+  const posts = await Post.find(mongoQuery, { title: 1, date: 1, author: 1, imageUrl: 1, content: 1, category: 1, tags: 1 }).sort({ date: -1 }).lean();
   const isAdmin = await isAdminFromCookies();
   return (
     <div className="min-h-screen bg-zinc-950 text-white">
       <NavigationBar />
       <main className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-10 py-12 space-y-10">
-        <div className="flex items-center justify-between">
+        <div className="flex items-center justify-between gap-4">
           <h1 className="text-5xl font-semibold">Blogs</h1>
-          {isAdmin ? (
-            <Link href="/blog/new" className="inline-flex items-center justify-center w-9 h-9 rounded-full bg-white text-black text-2xl leading-none">+</Link>
-          ) : null}
+          <div className="flex items-center gap-3">
+            <BlogSearch initialQuery={q || ""} />
+            {isAdmin ? (
+              <Link href="/blog/new" className="inline-flex items-center justify-center w-9 h-9 rounded-full bg-white text-black text-2xl leading-none">+</Link>
+            ) : null}
+          </div>
         </div>
         <div className="space-y-8">
           {posts.map((p: any) => {
             const plain = (p.content || "").replace(/<[^>]*>/g, "");
             const preview = plain.length > 220 ? plain.slice(0, 220) + "…" : plain;
             return (
-              <div key={p._id.toString()} className="relative border border-zinc-800 rounded-xl p-5 md:p-7 hover:bg-zinc-900">
+              <div key={p._id.toString()} className="relative border border-zinc-800 rounded-xl p-5 md:p-7 hover:bg-zinc-900 overflow-hidden">
                 <Link href={`/blog/${p._id}`} className="absolute inset-0" aria-label={`Read ${p.title}`} />
                 <div className="relative z-10 flex items-start gap-5 md:gap-7 pointer-events-none">
                   {p.imageUrl ? (
-                    // eslint-disable-next-line @next/next/no-img-element
-                    <img src={p.imageUrl} alt="" className="w-48 h-32 md:w-64 md:h-40 lg:w-80 lg:h-48 object-cover rounded-lg" />
+                    <div className="relative w-48 h-32 md:w-64 md:h-40 lg:w-80 lg:h-48 flex-shrink-0">
+                      <Image
+                        src={getOptimizedImageUrl(p.imageUrl, { 
+                          width: 320, 
+                          height: 192, 
+                          quality: 'auto' 
+                        })}
+                        alt={p.title}
+                        fill
+                        className="object-cover rounded-lg"
+                        sizes="(max-width: 768px) 192px, (max-width: 1024px) 256px, 320px"
+                        placeholder="blur"
+                        blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAAIAAoDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAhEAACAQMDBQAAAAAAAAAAAAABAgMABAUGIWGRkqGx0f/EABUBAQEAAAAAAAAAAAAAAAAAAAMF/8QAGhEAAgIDAAAAAAAAAAAAAAAAAAECEgMRkf/aAAwDAQACEQMRAD8AltJagyeH0AthI5xdrLcNM91BF5pX2HaH9bcfaSXWGaRmknyJckliyjqTzSlT54b6bk+h0R//2Q=="
+                      />
+                    </div>
                   ) : null}
-                  <div className="flex-1">
+                  <div className="flex-1 min-w-0">
                     <div className="flex items-start justify-between gap-4">
-                      <h2 className="text-2xl md:text-3xl font-medium mb-1">{p.title}</h2>
+                      <h2 className="text-2xl md:text-3xl font-medium mb-1 break-words">{p.title}</h2>
                       {isAdmin ? (
-                        <Link href={`/blog/${p._id}/edit`} className="pointer-events-auto relative z-20 text-sm px-3 py-1 rounded border border-zinc-700 hover:bg-zinc-800">
+                        <Link href={`/blog/${p._id}/edit`} className="pointer-events-auto relative z-20 text-sm px-3 py-1 rounded border border-zinc-700 hover:bg-zinc-800 flex-shrink-0">
                           Edit
                         </Link>
                       ) : null}
@@ -71,7 +105,7 @@ export default async function BlogPage({}: {}) {
                         ))}
                       </div>
                     ) : null}
-                    <p className="text-gray-300 leading-relaxed md:text-lg">{preview}</p>
+                    <p className="text-gray-300 leading-relaxed md:text-lg break-words overflow-wrap-anywhere">{preview}</p>
                   </div>
                 </div>
               </div>
