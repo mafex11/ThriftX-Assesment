@@ -20,7 +20,7 @@ const CLOTHES: FeaturedItem[] = [
 const FeaturedClothes: React.FC = () => {
   return (
     <section className="w-full lg:px-20 md:px-10 sm:px-10">
-      <h2 className="text-2xl md:text-3xl font-semibold mb-8 ">Our Portfolio</h2>
+      <h2 className="text-2xl md:text-4xl font-semibold mb-8 ">Our Portfolio</h2>
       <div className="flex gap-6 overflow-x-auto snap-x snap-mandatory md:flex md:gap-8 md:overflow-x-auto md:snap-x lg:grid lg:grid-cols-6 lg:overflow-visible">
         {CLOTHES.map((item, index) => (
           <article key={index} className="group snap-center shrink-0 w-3/4 sm:w-1/2 md:w-[280px] lg:w-auto">

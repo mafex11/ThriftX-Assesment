@@ -4,6 +4,7 @@ import NavigationBar from "@/components/NavigationBar/navigation"
 import Footer from "@/components/Footer/footer"
 import { Button } from "@/components/ui/button"
 import emailjs from "@emailjs/browser"
+import { motion, type Variants } from "framer-motion"
 
 export default function ContactPage() {
   const formRef = useRef<HTMLFormElement | null>(null)
@@ -18,6 +19,18 @@ export default function ContactPage() {
   const mapRef = useRef<any>(null)
   const markerRef = useRef<any>(null)
   const [mapReady, setMapReady] = useState(false)
+
+  const containerVariants: Variants = {
+    hidden: {},
+    show: {
+      transition: { staggerChildren: 0.08, delayChildren: 0.2 }
+    }
+  }
+
+  const itemVariants: Variants = {
+    hidden: { opacity: 0, y: 20 },
+    show: { opacity: 1, y: 0, transition: { duration: 0.5 } }
+  }
 
   // Load Leaflet from CDN (no additional dependency) and initialize map
   React.useEffect(() => {
@@ -230,44 +243,66 @@ export default function ContactPage() {
     <div className="min-h-screen bg-zinc-950 text-white">
       <NavigationBar />
       <main className="bg-zinc-950">
-        <div className="grid grid-cols-1 md:grid-cols-2 min-h-screen">
+        <motion.div
+          className="grid grid-cols-1 md:grid-cols-2 min-h-screen"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.5 }}
+        >
           {/* Left column: full-height video on desktop with padding and rounded corners */}
-          <div className="relative hidden md:block px-10 pt-10 pb-40">
+          <motion.div
+            className="relative hidden md:block px-10 pt-10 pb-40"
+            initial={{ opacity: 0, scale: 0.98 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            viewport={{ once: true, amount: 0.2 }}
+          transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+          >
             <div className="relative w-full h-full rounded-2xl overflow-hidden">
-              <video
-                src="/video.mp4"
+              <motion.video
+                src="/video.webm"
                 autoPlay
                 muted
                 loop
                 playsInline
                 className="absolute inset-0 w-full h-full object-cover"
+                initial={{ scale: 1.05 }}
+                animate={{ scale: 1 }}
+                transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1] }}
               />
               {/* Dark gradient overlay */}
               <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-black/50 via-black/50 to-transparent" />
             </div>
-          </div>
+          </motion.div>
 
           {/* Right column: centered form */}
-          <div className="flex items-center justify-center px-6 sm:px-10 lg:px-20 py-16">
-            <div className="w-full max-w-xl">
-              <h1 className="text-4xl md:text-6xl font-semibold">Get in touch</h1>
-              <p className="mt-4 text-zinc-300 max-w-2xl">We’d love to hear about your store or project. Fill out the form and we’ll get back to you.</p>
+          <motion.div
+            className="flex items-center justify-center px-6 sm:px-10 lg:px-20 py-16"
+            initial={{ opacity: 0, y: 12 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.2 }}
+            transition={{ duration: 0.6 }}
+          >
+            <motion.div className="w-full max-w-xl" variants={containerVariants} initial="hidden" whileInView="show" viewport={{ once: true }}>
+              <motion.h1 className="text-4xl md:text-6xl font-semibold" variants={itemVariants}>Get in touch</motion.h1>
+              <motion.p className="mt-4 text-zinc-300 max-w-2xl" variants={itemVariants}>We’d love to hear about your store or project. Fill out the form and we’ll get back to you.</motion.p>
 
-              <form ref={formRef} onSubmit={handleSubmit} className="mt-10 grid grid-cols-1 gap-4">
-                <input
+              <motion.form ref={formRef} onSubmit={handleSubmit} className="mt-10 grid grid-cols-1 gap-4" variants={containerVariants}>
+                <motion.input
+                  variants={itemVariants}
                   required
                   name="user_name"
                   placeholder="Name"
                   className="w-full rounded-lg bg-zinc-900 border border-zinc-800 px-4 py-3"
                 />
-                <input
+                <motion.input
+                  variants={itemVariants}
                   required
                   type="email"
                   name="user_email"
                   placeholder="Email"
                   className="w-full rounded-lg bg-zinc-900 border border-zinc-800 px-4 py-3"
                 />
-                <div className="grid grid-cols-1 gap-2">
+                <motion.div className="grid grid-cols-1 gap-2" variants={itemVariants}>
                   <div className="flex gap-2">
                     <input
                       required
@@ -277,57 +312,54 @@ export default function ContactPage() {
                       onChange={(e) => setAddress(e.target.value)}
                       className="w-full rounded-lg bg-zinc-900 border border-zinc-800 px-4 py-3"
                     />
-                    {/* <Button
-                      type="button"
-                      onClick={() => geocodeAddress(address)}
-                      disabled={locating || !address.trim()}
-                      className="rounded-lg bg-white text-black hover:bg-zinc-200 disabled:opacity-60"
-                    >
-                      {locating ? "Locating..." : "Locate"}
-                    </Button> */}
-                    <Button
-                      type="button"
-                      onClick={useMyLocation}
-                      disabled={locating}
-                      className="rounded-lg bg-white text-black hover:bg-zinc-200 disabled:opacity-60 h-full"
-                    >
-                      {locating ? "Locating..." : "Use my location"}
-                    </Button>
+                    <motion.div variants={itemVariants}>
+                      <Button
+                        type="button"
+                        onClick={useMyLocation}
+                        disabled={locating}
+                        className="rounded-lg bg-white text-black hover:bg-zinc-200 disabled:opacity-60 h-full"
+                      >
+                        {locating ? "Locating..." : "Use my location"}
+                      </Button>
+                    </motion.div>
                   </div>
                   {locateError && (
-                    <p className="text-red-400 text-sm">{locateError}</p>
+                    <motion.p className="text-red-400 text-sm" variants={itemVariants}>{locateError}</motion.p>
                   )}
-                  <div className="mt-2">
-                    <div className="aspect-[16/9] w-full overflow-hidden rounded-lg border border-zinc-800">
+                  <motion.div className="mt-2" variants={itemVariants}>
+                    <motion.div className="aspect-[16/9] w-full overflow-hidden rounded-lg border border-zinc-800" initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }} transition={{ duration: 0.6 }}>
                       <div ref={mapContainerRef} id="store-location-map" className="w-full h-full" />
-                    </div>
+                    </motion.div>
                     {lat && lon && (
-                      <p className="mt-2 text-sm text-zinc-400">Latitude: {lat}, Longitude: {lon}</p>
+                      <motion.p className="mt-2 text-sm text-zinc-400" variants={itemVariants}>Latitude: {lat}, Longitude: {lon}</motion.p>
                     )}
-                  </div>
+                  </motion.div>
                   {/* Hidden inputs to submit coordinates */}
                   <input type="hidden" name="location_lat" value={lat} />
                   <input type="hidden" name="location_lon" value={lon} />
-                </div>
-                <textarea
+                </motion.div>
+                <motion.textarea
+                  variants={itemVariants}
                   required
                   name="message"
                   placeholder="Message"
                   className="w-full rounded-lg bg-zinc-900 border border-zinc-800 px-4 py-3 min-h-40"
                 />
-                <Button disabled={sending} className="rounded-full bg-white text-black hover:bg-zinc-200 disabled:opacity-60 w-fit">
-                  {sending ? "Sending..." : "Send message"}
-                </Button>
+                <motion.div variants={itemVariants}>
+                  <Button disabled={sending} className="rounded-full bg-white text-black hover:bg-zinc-200 disabled:opacity-60 w-fit">
+                    {sending ? "Sending..." : "Send message"}
+                  </Button>
+                </motion.div>
                 {status === "success" && (
-                  <p className="text-emerald-400 text-sm">Thanks! We’ll get back to you soon.</p>
+                  <motion.p className="text-emerald-400 text-sm" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>Thanks! We’ll get back to you soon.</motion.p>
                 )}
                 {status === "error" && (
-                  <p className="text-red-400 text-sm">Please check your details and try again.</p>
+                  <motion.p className="text-red-400 text-sm" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>Please check your details and try again.</motion.p>
                 )}
-              </form>
-            </div>
-          </div>
-        </div>
+              </motion.form>
+            </motion.div>
+          </motion.div>
+        </motion.div>
       </main>
       <Footer />
     </div>
