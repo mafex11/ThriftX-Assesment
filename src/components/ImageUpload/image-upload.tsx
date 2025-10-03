@@ -2,7 +2,7 @@
 
 import React, { useState, useRef } from 'react';
 import { Button } from '@/components/ui/button';
-import { Upload, X, Image as ImageIcon } from 'lucide-react';
+import { Upload, X, Image as ImageIcon, Loader2 } from 'lucide-react';
 import Image from 'next/image';
 import { getOptimizedImageUrl } from '@/lib/cloudinary';
 
@@ -176,7 +176,7 @@ export default function ImageUpload({ onImageUpload, currentImageUrl, disabled }
       >
         {uploading ? (
           <>
-            <Upload className="h-4 w-4 mr-2 animate-spin" />
+            <Loader2 className="h-4 w-4 mr-2 animate-spin" />
             Uploading...
           </>
         ) : (
