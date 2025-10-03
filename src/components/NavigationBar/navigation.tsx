@@ -76,13 +76,25 @@ const NavigationBar = () => {
             ) : (
               <>
                 <Link href="/login" className="text-white hover:text-gray-400 transition-colors">Login</Link>
-                <Link
-                  href="/signup"
-                  className="inline-flex items-center rounded-full bg-white px-3 py-1.5 text-black font-normal hover:text-gray-400 transition-colors justify-center"
-                >
-                  Sign up
-                </Link>
               </>
+            )}
+
+{process.env.NEXT_PUBLIC_CALENDLY_URL ? (
+              <a
+                href={process.env.NEXT_PUBLIC_CALENDLY_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center rounded-full bg-white px-3 py-1.5 text-black font-normal hover:text-gray-400 transition-colors justify-center"
+              >
+                Schedule a meeting
+              </a>
+            ) : (
+              <Link
+                href="/contact"
+                className="inline-flex items-center rounded-full bg-white px-3 py-1.5 text-black font-normal hover:text-gray-400 transition-colors justify-center"
+              >
+                Schedule a meeting
+              </Link>
             )}
           </nav>
 
@@ -201,6 +213,13 @@ const NavigationBar = () => {
                 <motion.div variants={mobileNavItemVariants}>
                   <Link href="/contact" className="text-white hover:text-gray-400 transition-colors" onClick={() => setIsOpen(false)}>Contact</Link>
                 </motion.div>
+                <motion.div 
+                  variants={mobileNavItemVariants}
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                >
+                 
+                </motion.div>
                 {isAuthenticated ? (
                   <>
                     <motion.span 
@@ -224,24 +243,33 @@ const NavigationBar = () => {
                     <motion.div variants={mobileNavItemVariants}>
                       <Link href="/login" className="text-white hover:text-gray-400 transition-colors" onClick={() => setIsOpen(false)}>Login</Link>
                     </motion.div>
-                    <motion.div 
-                      variants={mobileNavItemVariants}
-                      whileHover={{ scale: 1.05 }}
-                      whileTap={{ scale: 0.95 }}
-                    >
-                      <Link 
-                        href="/signup" 
-                        className="inline-flex items-center rounded-full bg-white px-3 py-1.5 text-black font-normal hover:text-gray-400 transition-colors justify-center" 
-                        onClick={() => setIsOpen(false)}
-                      >
-                        Sign up
-                      </Link>
-                    </motion.div>
                   </>
                 )}
+                 {process.env.NEXT_PUBLIC_CALENDLY_URL ? (
+                    <a 
+                      href={process.env.NEXT_PUBLIC_CALENDLY_URL}
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center rounded-full bg-white px-3 py-1.5 text-black font-normal hover:text-gray-400 transition-colors justify-center"
+                      onClick={() => setIsOpen(false)}
+                    >
+                      Schedule a meeting
+                    </a>
+                  ) : (
+                    <Link 
+                      href="/contact" 
+                      className="inline-flex items-center rounded-full bg-white px-3 py-1.5 text-black font-normal hover:text-gray-400 transition-colors justify-center" 
+                      onClick={() => setIsOpen(false)}
+                    >
+                      Schedule a meeting
+                    </Link>
+                  )}
               </motion.nav>
+              
             </div>
+            
           </motion.div>
+          
         )}
       </AnimatePresence>
     </header>

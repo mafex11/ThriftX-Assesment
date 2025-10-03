@@ -30,6 +30,8 @@ type ILeanPost = {
   author: string;
   content: string;
   imageUrl?: string;
+  category?: string;
+  tags?: string[];
 };
 
 export default async function EditBlogPostPage({ params }: { params: Promise<{ id: string }> }) {
@@ -51,6 +53,8 @@ export default async function EditBlogPostPage({ params }: { params: Promise<{ i
           author: post.author as any,
           imageUrl: (post as any).imageUrl || "",
           content: post.content as any,
+          category: (post as any).category || "",
+          tags: (post as any).tags || [],
         }} />
       </main>
       <Footer />

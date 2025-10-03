@@ -27,7 +27,7 @@ async function isAdminFromCookies(): Promise<boolean> {
 
 export default async function BlogPage({}: {}) {
   await connectToDatabase();
-  const posts = await Post.find({}, { title: 1, date: 1, author: 1, imageUrl: 1, content: 1 }).sort({ date: -1 }).lean();
+  const posts = await Post.find({}, { title: 1, date: 1, author: 1, imageUrl: 1, content: 1, category: 1, tags: 1 }).sort({ date: -1 }).lean();
   const isAdmin = await isAdminFromCookies();
   return (
     <div className="min-h-screen bg-zinc-950 text-white">
@@ -60,7 +60,17 @@ export default async function BlogPage({}: {}) {
                         </Link>
                       ) : null}
                     </div>
-                    <p className="text-sm md:text-base text-gray-400 mb-3">{new Date(p.date).toLocaleDateString()} · {p.author}</p>
+                    <p className="text-sm md:text-base text-gray-400 mb-2">{new Date(p.date).toLocaleDateString()} · {p.author}</p>
+                    {p.category || (p.tags && p.tags.length) ? (
+                      <div className="mb-3 flex flex-wrap gap-2 text-xs text-gray-300">
+                        {p.category ? (
+                          <span className="px-2 py-0.5 rounded-full border border-zinc-700">{p.category}</span>
+                        ) : null}
+                        {(p.tags || []).map((t: string, i: number) => (
+                          <span key={i} className="px-2 py-0.5 rounded-full border border-zinc-800">#{t}</span>
+                        ))}
+                      </div>
+                    ) : null}
                     <p className="text-gray-300 leading-relaxed md:text-lg">{preview}</p>
                   </div>
                 </div>

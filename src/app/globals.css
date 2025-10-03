@@ -120,5 +120,8 @@
   }
   html {
     scroll-behavior: smooth;
+    /* Reserve space for vertical scrollbar to prevent layout shift */
+    scrollbar-gutter: stable;
+    overflow-y: scroll;
   }
 }

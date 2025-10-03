@@ -32,10 +32,23 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
   if (!isAdminFromRequest(req)) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   await connectToDatabase();
   const body = await req.json();
-  const { title, date, author, content, imageUrl } = body;
+  const { title, date, author, content, imageUrl, category, tags } = body;
+  const normalizedTags = Array.isArray(tags)
+    ? tags.filter((t: unknown) => typeof t === "string").map((t: string) => t.trim()).filter(Boolean)
+    : typeof tags === "string"
+      ? tags.split(",").map((t) => t.trim()).filter(Boolean)
+      : undefined;
   const post = await Post.findByIdAndUpdate(
     id,
-    { title, date: date ? new Date(date) : undefined, author, content, imageUrl },
+    {
+      title,
+      date: date ? new Date(date) : undefined,
+      author,
+      content,
+      imageUrl,
+      category: typeof category === "string" ? category.trim() : undefined,
+      ...(normalizedTags !== undefined ? { tags: normalizedTags } : {}),
+    },
     { new: true }
   );
   if (!post) return NextResponse.json({ error: "Not found" }, { status: 404 });

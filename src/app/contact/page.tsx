@@ -5,6 +5,7 @@ import Footer from "@/components/Footer/footer"
 import { Button } from "@/components/ui/button"
 import emailjs from "@emailjs/browser"
 import { motion, type Variants } from "framer-motion"
+import CalendlyWidget from "@/components/Calendly/calendly-widget"
 
 export default function ContactPage() {
   const formRef = useRef<HTMLFormElement | null>(null)
@@ -274,7 +275,7 @@ export default function ContactPage() {
             </div>
           </motion.div>
 
-          {/* Right column: centered form */}
+          {/* Right column: centered form + scheduling */}
           <motion.div
             className="flex items-center justify-center px-6 sm:px-10 lg:px-20 py-16"
             initial={{ opacity: 0, y: 12 }}
@@ -357,6 +358,24 @@ export default function ContactPage() {
                   <motion.p className="text-red-400 text-sm" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>Please check your details and try again.</motion.p>
                 )}
               </motion.form>
+
+              {/* Scheduling section */}
+              <motion.div className="mt-12" variants={itemVariants}>
+                <h2 className="text-2xl font-semibold">Prefer to talk live?</h2>
+                <p className="mt-2 text-zinc-400">Schedule a Online meeting at a time that works for you.</p>
+                <div className="mt-4">
+                  {process.env.NEXT_PUBLIC_CALENDLY_URL ? (
+                    <a href={process.env.NEXT_PUBLIC_CALENDLY_URL} target="_blank" rel="noopener noreferrer">
+                      <Button className="rounded-full bg-white text-black hover:bg-zinc-200">Schedule a meeting</Button>
+                    </a>
+                  ) : (
+                    <Button disabled className="rounded-full bg-white text-black hover:bg-zinc-200 disabled:opacity-60">Schedule a meeting</Button>
+                  )}
+                </div>
+                {/* <div className="mt-4">
+                  <CalendlyWidget height={680} />
+                </div> */}
+              </motion.div>
             </motion.div>
           </motion.div>
         </motion.div>

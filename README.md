@@ -25,6 +25,16 @@ bun dev
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
+### Optional: Enable Calendly scheduling
+
+Set your public Calendly link to enable the inline scheduler on the contact page. In `.env.local` add:
+
+```
+NEXT_PUBLIC_CALENDLY_URL=https://calendly.com/your-handle/meeting-type
+```
+
+If not set, the contact page will show a short note asking to configure it.
+
 ## Tech Stack
 
 - [Next.js](https://nextjs.org) - React framework

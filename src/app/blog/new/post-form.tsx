@@ -10,6 +10,9 @@ export default function NewPostForm() {
   const [date, setDate] = useState(new Date().toISOString().slice(0,10));
   const [author, setAuthor] = useState("");
   const [imageUrl, setImageUrl] = useState("");
+  const [category, setCategory] = useState("");
+  const [tags, setTags] = useState<string[]>([]);
+  const [tagsInput, setTagsInput] = useState("");
   const [content, setContent] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -21,7 +24,7 @@ export default function NewPostForm() {
     const res = await fetch("/api/posts", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ title, date, author, content, imageUrl })
+      body: JSON.stringify({ title, date, author, content, imageUrl, category, tags })
     });
     setLoading(false);
     if (res.ok) {
@@ -53,6 +56,17 @@ export default function NewPostForm() {
         <div>
           <label className="block mb-2">Image URL (optional)</label>
           <Input value={imageUrl} onChange={(e) => setImageUrl(e.target.value)} />
+        </div>
+        <div>
+          <label className="block mb-2">Category</label>
+          <Input value={category} onChange={(e) => setCategory(e.target.value)} placeholder="e.g. Style, News" />
+        </div>
+        <div>
+          <label className="block mb-2">Tags</label>
+          <Input value={tagsInput} onChange={(e) => setTagsInput(e.target.value)} placeholder="Comma separated (e.g. y2k, denim, thrift)" onBlur={() => setTags(tagsInput.split(",").map(t => t.trim()).filter(Boolean))} />
+          {tags.length ? (
+            <div className="mt-2 text-xs text-gray-400">{tags.join(", ")}</div>
+          ) : null}
         </div>
         <div className="md:col-span-2">
           <label className="block mb-2">Content (HTML supported)</label>

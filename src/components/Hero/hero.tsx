@@ -87,7 +87,7 @@ const Hero = () => {
     >
       {/* Main heading */}
       <motion.h1 
-        className="text-4xl md:text-7xl lg:text-8xl font-semibold max-w-screen leading-tight pl-5 sm:pl-40 pt-5 sm:pt-20"
+        className="text-4xl md:text-7xl lg:text-8xl font-semibold max-w-screen leading-tight pb-20 pl-5 sm:pl-40 pt-5 sm:pt-20"
         variants={fadeInUp}
         style={{ y, opacity }}
       >

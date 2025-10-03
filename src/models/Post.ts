@@ -5,6 +5,8 @@ export interface IPost extends mongoose.Document {
   date: Date;
   author: string;
   content: string;
+  category?: string;
+  tags?: string[];
   imageUrl?: string;
   createdAt: Date;
   updatedAt: Date;
@@ -15,6 +17,8 @@ const PostSchema = new Schema<IPost>({
   date: { type: Date, required: true, default: () => new Date() },
   author: { type: String, required: true, trim: true },
   content: { type: String, required: true },
+  category: { type: String, trim: true },
+  tags: { type: [String], default: [] },
   imageUrl: { type: String },
 }, { timestamps: true });
 

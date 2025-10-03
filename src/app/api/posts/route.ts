@@ -30,11 +30,24 @@ export async function POST(req: NextRequest | Request) {
   if (!isAdminFromRequest(req)) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   await connectToDatabase();
   const body = await req.json();
-  const { title, date, author, content, imageUrl } = body;
+  const { title, date, author, content, imageUrl, category, tags } = body;
   if (!title || !author || !content) {
     return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
   }
-  const post = await Post.create({ title, date: date ? new Date(date) : new Date(), author, content, imageUrl });
+  const normalizedTags = Array.isArray(tags)
+    ? tags.filter((t: unknown) => typeof t === "string").map((t: string) => t.trim()).filter(Boolean)
+    : typeof tags === "string"
+      ? tags.split(",").map((t) => t.trim()).filter(Boolean)
+      : [];
+  const post = await Post.create({
+    title,
+    date: date ? new Date(date) : new Date(),
+    author,
+    content,
+    imageUrl,
+    category: typeof category === "string" ? category.trim() : undefined,
+    tags: normalizedTags,
+  });
   return NextResponse.json(post, { status: 201 });
 }
 
