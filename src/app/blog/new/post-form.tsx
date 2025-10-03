@@ -1,9 +1,13 @@
 "use client"
 import React, { useState } from "react";
+import dynamic from "next/dynamic";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
-import ImageUpload from "@/components/ImageUpload/image-upload";
+const ImageUpload = dynamic(() => import("@/components/ImageUpload/image-upload"), {
+  ssr: false,
+  loading: () => <div className="h-48 w-full rounded border border-zinc-800 bg-zinc-900/40 animate-pulse" />
+});
 
 export default function NewPostForm() {
   const router = useRouter();

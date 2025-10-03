@@ -1,6 +1,10 @@
 import type { NextConfig } from "next";
+// Enable bundle analyzer when ANALYZE=true
+const withBundleAnalyzer = require('@next/bundle-analyzer')({
+  enabled: process.env.ANALYZE === 'true',
+});
 
-const nextConfig: NextConfig = {
+const baseConfig: NextConfig = {
   /* config options here */
   images: {
     remotePatterns: [
@@ -44,5 +48,4 @@ const nextConfig: NextConfig = {
     imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
   },
 };
-
-export default nextConfig;
+module.exports = withBundleAnalyzer(baseConfig);
