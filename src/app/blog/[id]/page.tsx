@@ -8,6 +8,8 @@ import { Post } from "@/models/Post";
 import { unstable_cache } from "next/cache";
 import Image from "next/image";
 import { getOptimizedImageUrl } from "@/lib/cloudinary";
+import Link from "next/link";
+import { ArrowLeft } from "lucide-react";
 
 const getPostCached = unstable_cache(
   async (id: string) => {
@@ -24,7 +26,18 @@ export default async function PostPage({ params }: { params: { id: string } }) {
   return (
     <div className="min-h-screen bg-zinc-950 text-white overflow-x-hidden">
       <NavigationBar />
-      <main className="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8 py-10 space-y-6">
+      <main className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-10 py-12 space-y-10">
+        <div className="flex items-center gap-3">
+          <Link
+            href="/blog"
+            aria-label="Back to Blogs"
+            className="inline-flex items-center gap-2 text-sm px-3 py-1 rounded border border-zinc-700 hover:bg-zinc-800"
+          >
+            <ArrowLeft className="h-4 w-4" />
+            Back
+          </Link>
+          <h1 className="text-xl font-medium">Blogs</h1>
+        </div>
         <h1 className="text-3xl font-semibold break-words">{post.title}</h1>
         <p className="text-sm text-gray-400">{new Date(post.date).toLocaleDateString()} · {post.author}</p>
         {post.imageUrl ? (
