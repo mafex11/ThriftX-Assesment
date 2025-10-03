@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { revalidateTag } from "next/cache";
 import { connectToDatabase } from "@/lib/db";
 import { Post } from "@/models/Post";
 import jwt from "jsonwebtoken";
@@ -20,10 +21,16 @@ function isAdminFromRequest(req: NextRequest | Request): boolean {
   }
 }
 
+export const dynamic = "force-dynamic";
+
 export async function GET() {
   await connectToDatabase();
   const posts = await Post.find({}).sort({ date: -1 }).select("title date author imageUrl");
-  return NextResponse.json(posts);
+  return NextResponse.json(posts, {
+    headers: {
+      "Cache-Control": "public, s-maxage=300, stale-while-revalidate=600",
+    },
+  });
 }
 
 export async function POST(req: NextRequest | Request) {
@@ -48,6 +55,7 @@ export async function POST(req: NextRequest | Request) {
     category: typeof category === "string" ? category.trim() : undefined,
     tags: normalizedTags,
   });
+  try { revalidateTag("posts"); } catch {}
   return NextResponse.json(post, { status: 201 });
 }
 

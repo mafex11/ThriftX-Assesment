@@ -1,4 +1,5 @@
 import React from "react";
+import { unstable_cache, revalidateTag } from "next/cache";
 import NavigationBar from "@/components/NavigationBar/navigation";
 import Footer from "@/components/Footer/footer";
 import BlogSearch from "@/components/BlogSearch/blog-search";
@@ -12,7 +13,7 @@ import { getOptimizedImageUrl } from "@/lib/cloudinary";
 
 const JWT_SECRET = process.env.JWT_SECRET || "dev-secret-change";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 600;
 export const runtime = "nodejs";
 
 async function isAdminFromCookies(): Promise<boolean> {
@@ -28,8 +29,18 @@ async function isAdminFromCookies(): Promise<boolean> {
   }
 }
 
+const getPostsCached = unstable_cache(
+  async (mongoQuery: any) => {
+    await connectToDatabase();
+    return Post.find(mongoQuery, { title: 1, date: 1, author: 1, imageUrl: 1, content: 1, category: 1, tags: 1 })
+      .sort({ date: -1 })
+      .lean();
+  },
+  ["posts-list"],
+  { revalidate: 600, tags: ["posts"] }
+);
+
 export default async function BlogPage({ searchParams }: { searchParams?: { [key: string]: string | string[] | undefined } }) {
-  await connectToDatabase();
   const qRaw = (searchParams?.q ?? "");
   const q = Array.isArray(qRaw) ? qRaw[0] : qRaw;
   const hasQuery = typeof q === "string" && q.trim().length > 0;
@@ -45,7 +56,7 @@ export default async function BlogPage({ searchParams }: { searchParams?: { [key
         ],
       }
     : {};
-  const posts = await Post.find(mongoQuery, { title: 1, date: 1, author: 1, imageUrl: 1, content: 1, category: 1, tags: 1 }).sort({ date: -1 }).lean();
+  const posts = await getPostsCached(mongoQuery);
   const isAdmin = await isAdminFromCookies();
   return (
     <div className="min-h-screen bg-zinc-950 text-white">

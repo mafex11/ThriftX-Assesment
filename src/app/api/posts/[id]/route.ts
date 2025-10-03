@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { revalidatePath, revalidateTag } from "next/cache";
 export const runtime = "nodejs";
 import { connectToDatabase } from "@/lib/db";
 import { Post } from "@/models/Post";
@@ -52,6 +53,11 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
     { new: true }
   );
   if (!post) return NextResponse.json({ error: "Not found" }, { status: 404 });
+  try {
+    revalidateTag("posts");
+    revalidatePath(`/blog/${id}`);
+    revalidatePath("/blog");
+  } catch {}
   return NextResponse.json(post);
 }
 
@@ -61,6 +67,10 @@ export async function DELETE(req: NextRequest, { params }: { params: Promise<{ i
   await connectToDatabase();
   const post = await Post.findByIdAndDelete(id);
   if (!post) return NextResponse.json({ error: "Not found" }, { status: 404 });
+  try {
+    revalidateTag("posts");
+    revalidatePath("/blog");
+  } catch {}
   return NextResponse.json({ ok: true });
 }
 

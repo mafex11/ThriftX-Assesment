@@ -1,14 +1,25 @@
 import React from "react";
+
+export const revalidate = 600;
 import NavigationBar from "@/components/NavigationBar/navigation";
 import Footer from "@/components/Footer/footer";
 import { connectToDatabase } from "@/lib/db";
 import { Post } from "@/models/Post";
+import { unstable_cache } from "next/cache";
 import Image from "next/image";
 import { getOptimizedImageUrl } from "@/lib/cloudinary";
 
+const getPostCached = unstable_cache(
+  async (id: string) => {
+    await connectToDatabase();
+    return Post.findById(id).lean<{ title: string; date: Date; author: string; content: string; imageUrl?: string; category?: string; tags?: string[] }>();
+  },
+  ["post-by-id"],
+  { revalidate: 600, tags: ["posts"] }
+);
+
 export default async function PostPage({ params }: { params: { id: string } }) {
-  await connectToDatabase();
-  const post = await Post.findById(params.id).lean<{ title: string; date: Date; author: string; content: string; imageUrl?: string; category?: string; tags?: string[] }>();
+  const post = await getPostCached(params.id);
   if (!post) return <div className="min-h-screen bg-zinc-950 text-white"><NavigationBar /><main className="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8 py-10">Not found</main><Footer /></div>;
   return (
     <div className="min-h-screen bg-zinc-950 text-white overflow-x-hidden">
