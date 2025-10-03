@@ -234,7 +234,7 @@ const Hero = () => {
       <motion.section 
         id="contact" 
         ref={contactRef as any}
-        className={`w-full py-20 transition-colors duration-500 ${contactInView ? 'bg-white text-zinc-900' : 'bg-zinc-950 text-white'}`}
+        className={`w-full py-20 transition-colors duration-500 bg-zinc-950 text-white`}
         initial={{ opacity: 0 }}
         whileInView={{ opacity: 1 }}
         transition={{ duration: 0.8 }}
@@ -257,7 +257,7 @@ const Hero = () => {
               Have a thrift store?
             </motion.h3>
             <motion.p 
-              className={`mt-4 max-w-xl ${contactInView ? 'text-zinc-700' : 'text-zinc-300'}`}
+              className={`mt-4 max-w-xl text-zinc-300`}
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.6 }}
@@ -279,7 +279,7 @@ const Hero = () => {
               transition={{ duration: 0.6, delay: 0.8 }}
               viewport={{ once: true }}
             >
-              <Button asChild className={`rounded-full px-6 py-6 text-base transition-colors ${contactInView ? 'bg-black text-white hover:bg-zinc-800' : 'bg-white text-black hover:bg-zinc-200'}`}>
+              <Button asChild className={`rounded-full px-6 py-6 text-base transition-colors bg-white text-black hover:bg-zinc-200`}>
                 <Link href="/contact">Contact us</Link>
               </Button>
             </motion.div>
