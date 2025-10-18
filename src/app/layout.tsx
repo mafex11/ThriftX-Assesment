@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Instrument_Sans } from "next/font/google";
 import "./globals.css";
 import { AuthProvider } from "@/context/AuthContext";
+import Script from 'next/script'
 
 export const revalidate = 3600;
 
@@ -86,6 +87,10 @@ export default function RootLayout({
         <AuthProvider>
           {children}
         </AuthProvider>
+        <Script 
+          src="https://layerpathassessment.vercel.app/tracker.js" 
+          strategy="afterInteractive"
+        />
       </body>
     </html>
   );
