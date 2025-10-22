@@ -81,7 +81,6 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      //async script
       <body
         className={`${instrumentSans.variable} antialiased font-sans`}
       >
